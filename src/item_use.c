@@ -182,7 +182,7 @@ u8 CheckIfItemIsTMHMOrEvolutionStone(u16 itemId)
 // Mail in the bag menu can't have a message but it can be checked (view the mail background, no message)
 static void CB2_CheckMail(void)
 {
-    struct MailStruct mail;
+    struct Mail mail;
     mail.itemId = gSpecialVar_ItemId;
     ReadMail(&mail, CB2_ReturnToBagMenuPocket, 0);
 }
@@ -249,7 +249,7 @@ static bool32 CanFish(void)
     {
         if (MetatileBehavior_IsSurfableWaterOrUnderwater(tileBehavior) && !MapGridIsImpassableAt(x, y))
             return TRUE;
-        if (MetatileBehavior_8089510(tileBehavior) == TRUE)
+        if (MetatileBehavior_IsBridgeOverWaterNoEdge(tileBehavior) == TRUE)
             return TRUE;
     }
 

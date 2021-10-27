@@ -22,7 +22,7 @@
 #include "link.h"
 #include "list_menu.h"
 #include "main.h"
-#include "mevent.h"
+#include "mystery_gift.h"
 #include "match_call.h"
 #include "menu.h"
 #include "overworld.h"
@@ -56,7 +56,7 @@
 #include "constants/heal_locations.h"
 #include "constants/map_types.h"
 #include "constants/maps.h"
-#include "constants/mevent.h"
+#include "constants/mystery_gift.h"
 #include "constants/script_menu.h"
 #include "constants/slot_machine.h"
 #include "constants/songs.h"
@@ -116,8 +116,8 @@ static void HideFrontierExchangeCornerItemIcon(u16 menu, u16 unused);
 static void ShowBattleFrontierTutorMoveDescription(u8 menu, u16 selection);
 static void CloseScrollableMultichoice(u8 taskId);
 static void ScrollableMultichoice_RemoveScrollArrows(u8 taskId);
-static void sub_813A600(u8 taskId);
-static void sub_813A664(u8 taskId);
+static void Task_ScrollableMultichoice_WaitReturnToList(u8 taskId);
+static void Task_ScrollableMultichoice_ReturnToList(u8 taskId);
 static void ShowFrontierExchangeCornerItemIcon(u16 item);
 static void Task_DeoxysRockInteraction(u8 taskId);
 static void ChangeDeoxysRockLevel(u8 a0);
@@ -1655,20 +1655,20 @@ void BufferLottoTicketNumber(void)
     }
 }
 
-u16 GetMysteryEventCardVal(void)
+u16 GetMysteryGiftCardStat(void)
 {
     switch (gSpecialVar_Result)
     {
         case GET_NUM_STAMPS:
-            return mevent_081445C0(GET_NUM_STAMPS_INTERNAL);
+            return MysteryGift_GetCardStat(CARD_STAT_NUM_STAMPS);
         case GET_MAX_STAMPS:
-            return mevent_081445C0(GET_MAX_STAMPS_INTERNAL);
+            return MysteryGift_GetCardStat(CARD_STAT_MAX_STAMPS);
         case GET_CARD_BATTLES_WON:
-            return mevent_081445C0(GET_CARD_BATTLES_WON_INTERNAL);
-        case 3: // Never occurs
-            return mevent_081445C0(1);
-        case 4: // Never occurs
-            return mevent_081445C0(2);
+            return MysteryGift_GetCardStat(CARD_STAT_BATTLES_WON);
+        case GET_CARD_BATTLES_LOST: // Never occurs
+            return MysteryGift_GetCardStat(CARD_STAT_BATTLES_LOST);
+        case GET_CARD_NUM_TRADES: // Never occurs
+            return MysteryGift_GetCardStat(CARD_STAT_NUM_TRADES);
         default:
             return 0;
     }
@@ -2071,61 +2071,61 @@ void ShowFrontierManiacMessage(void)
 {
     static const u8 *const sFrontierManiacMessages[][FRONTIER_MANIAC_MESSAGE_COUNT] =
     {
-        [FRONTIER_MANIAC_BATTLE_TOWER_SINGLES] =
+        [FRONTIER_MANIAC_TOWER_SINGLES] =
         {
             BattleFrontier_Lounge2_Text_SalonMaidenIsThere,
             BattleFrontier_Lounge2_Text_SalonMaidenSilverMons,
             BattleFrontier_Lounge2_Text_SalonMaidenGoldMons
         },
-        [FRONTIER_MANIAC_BATTLE_TOWER_DOUBLES] =
+        [FRONTIER_MANIAC_TOWER_DOUBLES] =
         {
             BattleFrontier_Lounge2_Text_DoubleBattleAdvice1,
             BattleFrontier_Lounge2_Text_DoubleBattleAdvice2,
             BattleFrontier_Lounge2_Text_DoubleBattleAdvice3
         },
-        [FRONTIER_MANIAC_BATTLE_TOWER_MULTIS] =
+        [FRONTIER_MANIAC_TOWER_MULTIS] =
         {
             BattleFrontier_Lounge2_Text_MultiBattleAdvice,
             BattleFrontier_Lounge2_Text_MultiBattleAdvice,
             BattleFrontier_Lounge2_Text_MultiBattleAdvice
         },
-        [FRONTIER_MANIAC_BATTLE_TOWER_LINK] =
+        [FRONTIER_MANIAC_TOWER_LINK] =
         {
             BattleFrontier_Lounge2_Text_LinkMultiBattleAdvice,
             BattleFrontier_Lounge2_Text_LinkMultiBattleAdvice,
             BattleFrontier_Lounge2_Text_LinkMultiBattleAdvice
         },
-        [FRONTIER_MANIAC_BATTLE_DOME] =
+        [FRONTIER_MANIAC_DOME] =
         {
             BattleFrontier_Lounge2_Text_DomeAceIsThere,
             BattleFrontier_Lounge2_Text_DomeAceSilverMons,
             BattleFrontier_Lounge2_Text_DomeAceGoldMons
         },
-        [FRONTIER_MANIAC_BATTLE_FACTORY] =
+        [FRONTIER_MANIAC_FACTORY] =
         {
             BattleFrontier_Lounge2_Text_FactoryHeadIsThere,
             BattleFrontier_Lounge2_Text_FactoryHeadSilverMons,
             BattleFrontier_Lounge2_Text_FactoryHeadGoldMons
         },
-        [FRONTIER_MANIAC_BATTLE_PALACE] =
+        [FRONTIER_MANIAC_PALACE] =
         {
             BattleFrontier_Lounge2_Text_PalaceMavenIsThere,
             BattleFrontier_Lounge2_Text_PalaceMavenSilverMons,
             BattleFrontier_Lounge2_Text_PalaceMavenGoldMons
         },
-        [FRONTIER_MANIAC_BATTLE_ARENA] =
+        [FRONTIER_MANIAC_ARENA] =
         {
             BattleFrontier_Lounge2_Text_ArenaTycoonIsThere,
             BattleFrontier_Lounge2_Text_ArenaTycoonSilverMons,
             BattleFrontier_Lounge2_Text_ArenaTycoonGoldMons
         },
-        [FRONTIER_MANIAC_BATTLE_PIKE] =
+        [FRONTIER_MANIAC_PIKE] =
         {
             BattleFrontier_Lounge2_Text_PikeQueenIsThere,
             BattleFrontier_Lounge2_Text_PikeQueenSilverMons,
             BattleFrontier_Lounge2_Text_PikeQueenGoldMons
         },
-        [FRONTIER_MANIAC_BATTLE_PYRAMID] =
+        [FRONTIER_MANIAC_PYRAMID] =
         {
             BattleFrontier_Lounge2_Text_PyramidKingIsThere,
             BattleFrontier_Lounge2_Text_PyramidKingSilverMons,
@@ -2135,16 +2135,16 @@ void ShowFrontierManiacMessage(void)
 
     static const u8 sFrontierManiacStreakThresholds[][FRONTIER_MANIAC_MESSAGE_COUNT - 1] =
     {
-        [FRONTIER_MANIAC_BATTLE_TOWER_SINGLES] = { 21, 56 },
-        [FRONTIER_MANIAC_BATTLE_TOWER_DOUBLES] = { 21, 35 },
-        [FRONTIER_MANIAC_BATTLE_TOWER_MULTIS]  = { 255, 255 },
-        [FRONTIER_MANIAC_BATTLE_TOWER_LINK]    = { 255, 255 },
-        [FRONTIER_MANIAC_BATTLE_DOME]          = { 2, 4 },
-        [FRONTIER_MANIAC_BATTLE_FACTORY]       = { 7, 21 },
-        [FRONTIER_MANIAC_BATTLE_PALACE]        = { 7, 21 },
-        [FRONTIER_MANIAC_BATTLE_ARENA]         = { 14, 28 },
-        [FRONTIER_MANIAC_BATTLE_PIKE]          = { 13, 112 }, //BUG: 112 (0x70) is probably a mistake; the Pike Queen is battled twice well before that
-        [FRONTIER_MANIAC_BATTLE_PYRAMID]       = { 7, 56 }
+        [FRONTIER_MANIAC_TOWER_SINGLES] = { 21, 56 },
+        [FRONTIER_MANIAC_TOWER_DOUBLES] = { 21, 35 },
+        [FRONTIER_MANIAC_TOWER_MULTIS]  = { 255, 255 },
+        [FRONTIER_MANIAC_TOWER_LINK]    = { 255, 255 },
+        [FRONTIER_MANIAC_DOME]          = { 2, 4 },
+        [FRONTIER_MANIAC_FACTORY]       = { 7, 21 },
+        [FRONTIER_MANIAC_PALACE]        = { 7, 21 },
+        [FRONTIER_MANIAC_ARENA]         = { 14, 28 },
+        [FRONTIER_MANIAC_PIKE]          = { 13, 112 }, //BUG: 112 (0x70) is probably a mistake; the Pike Queen is battled twice well before that
+        [FRONTIER_MANIAC_PYRAMID]       = { 7, 56 }
     };
 
     u8 i;
@@ -2153,10 +2153,10 @@ void ShowFrontierManiacMessage(void)
 
     switch (facility)
     {
-        case FRONTIER_MANIAC_BATTLE_TOWER_SINGLES:
-        case FRONTIER_MANIAC_BATTLE_TOWER_DOUBLES:
-        case FRONTIER_MANIAC_BATTLE_TOWER_MULTIS:
-        case FRONTIER_MANIAC_BATTLE_TOWER_LINK:
+        case FRONTIER_MANIAC_TOWER_SINGLES:
+        case FRONTIER_MANIAC_TOWER_DOUBLES:
+        case FRONTIER_MANIAC_TOWER_MULTIS:
+        case FRONTIER_MANIAC_TOWER_LINK:
             if (gSaveBlock2Ptr->frontier.towerWinStreaks[facility][FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.towerWinStreaks[facility][FRONTIER_LVL_OPEN])
             {
@@ -2167,7 +2167,7 @@ void ShowFrontierManiacMessage(void)
                 winStreak = gSaveBlock2Ptr->frontier.towerWinStreaks[facility][FRONTIER_LVL_OPEN];
             }
             break;
-        case FRONTIER_MANIAC_BATTLE_DOME:
+        case FRONTIER_MANIAC_DOME:
             if (gSaveBlock2Ptr->frontier.domeWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.domeWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_OPEN])
             {
@@ -2178,7 +2178,7 @@ void ShowFrontierManiacMessage(void)
                 winStreak = gSaveBlock2Ptr->frontier.domeWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_OPEN];
             }
             break;
-        case FRONTIER_MANIAC_BATTLE_FACTORY:
+        case FRONTIER_MANIAC_FACTORY:
             if (gSaveBlock2Ptr->frontier.factoryWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.factoryWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_OPEN])
             {
@@ -2189,7 +2189,7 @@ void ShowFrontierManiacMessage(void)
                 winStreak = gSaveBlock2Ptr->frontier.factoryWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_OPEN];
             }
             break;
-        case FRONTIER_MANIAC_BATTLE_PALACE:
+        case FRONTIER_MANIAC_PALACE:
             if (gSaveBlock2Ptr->frontier.palaceWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.palaceWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_OPEN])
             {
@@ -2200,7 +2200,7 @@ void ShowFrontierManiacMessage(void)
                 winStreak = gSaveBlock2Ptr->frontier.palaceWinStreaks[FRONTIER_MODE_SINGLES][FRONTIER_LVL_OPEN];
             }
             break;
-        case FRONTIER_MANIAC_BATTLE_ARENA:
+        case FRONTIER_MANIAC_ARENA:
             if (gSaveBlock2Ptr->frontier.arenaWinStreaks[FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.arenaWinStreaks[FRONTIER_LVL_OPEN])
             {
@@ -2211,7 +2211,7 @@ void ShowFrontierManiacMessage(void)
                 winStreak = gSaveBlock2Ptr->frontier.arenaWinStreaks[FRONTIER_LVL_OPEN];
             }
             break;
-        case FRONTIER_MANIAC_BATTLE_PIKE:
+        case FRONTIER_MANIAC_PIKE:
             if (gSaveBlock2Ptr->frontier.pikeWinStreaks[FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.pikeWinStreaks[FRONTIER_LVL_OPEN])
             {
@@ -2222,7 +2222,7 @@ void ShowFrontierManiacMessage(void)
                 winStreak = gSaveBlock2Ptr->frontier.pikeWinStreaks[FRONTIER_LVL_OPEN];
             }
             break;
-        case FRONTIER_MANIAC_BATTLE_PYRAMID:
+        case FRONTIER_MANIAC_PYRAMID:
             if (gSaveBlock2Ptr->frontier.pyramidWinStreaks[FRONTIER_LVL_50]
                 >= gSaveBlock2Ptr->frontier.pyramidWinStreaks[FRONTIER_LVL_OPEN])
             {
@@ -2702,10 +2702,10 @@ static void ScrollableMultichoice_ProcessInput(u8 taskId)
         {
             CloseScrollableMultichoice(taskId);
         }
-        else
+        else // Handle selection while keeping the menu open
         {
             ScrollableMultichoice_RemoveScrollArrows(taskId);
-            task->func = sub_813A600;
+            task->func = Task_ScrollableMultichoice_WaitReturnToList;
             EnableBothScriptContexts();
         }
         break;
@@ -2729,36 +2729,32 @@ static void CloseScrollableMultichoice(u8 taskId)
     EnableBothScriptContexts();
 }
 
-// Functionally unused; tKeepOpenAfterSelect is only != 0 in unused functions
-static void sub_813A600(u8 taskId)
+// Never run, tKeepOpenAfterSelect is FALSE for all scrollable multichoices.
+static void Task_ScrollableMultichoice_WaitReturnToList(u8 taskId)
 {
     switch (gTasks[taskId].tKeepOpenAfterSelect)
     {
-        case 1:
-        default:
-            break;
-        case 2:
-            gTasks[taskId].tKeepOpenAfterSelect = 1;
-            gTasks[taskId].func = sub_813A664;
-            break;
+    case 1:
+    default:
+        break;
+    case 2:
+        gTasks[taskId].tKeepOpenAfterSelect = 1;
+        gTasks[taskId].func = Task_ScrollableMultichoice_ReturnToList;
+        break;
     }
 }
 
 // Never called
-void sub_813A630(void)
+void ScrollableMultichoice_TryReturnToList(void)
 {
-    u8 taskId = FindTaskIdByFunc(sub_813A600);
+    u8 taskId = FindTaskIdByFunc(Task_ScrollableMultichoice_WaitReturnToList);
     if (taskId == TASK_NONE)
-    {
         EnableBothScriptContexts();
-    }
     else
-    {
-        gTasks[taskId].tKeepOpenAfterSelect++;
-    }
+        gTasks[taskId].tKeepOpenAfterSelect++; // Return to list
 }
 
-static void sub_813A664(u8 taskId)
+static void Task_ScrollableMultichoice_ReturnToList(u8 taskId)
 {
     ScriptContext2_Enable();
     ScrollableMultichoice_UpdateScrollArrows(taskId);
@@ -2807,23 +2803,7 @@ static void ScrollableMultichoice_RemoveScrollArrows(u8 taskId)
 // Removed for Emerald (replaced by ShowScrollableMultichoice)
 void ShowGlassWorkshopMenu(void)
 {
-    /*
-    u8 i;
-    ScriptContext2_Enable();
-    Menu_DrawStdWindowFrame(0, 0, 10, 11);
-    InitMenu(0, 1, 1, 5, 0, 9);
-    gUnknown_0203925C = 0;
-    ClearVerticalScrollIndicatorPalettes();
-    LoadScrollIndicatorPalette();
-    sub_810F2B4();
-    for (i = 0; i < 5; i++)
-    {
-        Menu_PrintText(gUnknown_083F83C0[i], 1, 2 * i + 1);
-    }
-    gUnknown_0203925B = 0;
-    gUnknown_0203925A = ARRAY_COUNT(gUnknown_083F83C0);
-    CreateTask(sub_810F118, 8);
-    */
+
 }
 
 void SetBattleTowerLinkPlayerGfx(void)
@@ -3252,11 +3232,11 @@ void CloseBattleFrontierTutorWindow(void)
 }
 
 // Never called
-void sub_813ADD4(void)
+void ScrollableMultichoice_RedrawPersistentMenu(void)
 {
     u16 scrollOffset, selectedRow;
     u8 i;
-    u8 taskId = FindTaskIdByFunc(sub_813A600);
+    u8 taskId = FindTaskIdByFunc(Task_ScrollableMultichoice_WaitReturnToList);
     if (taskId != TASK_NONE)
     {
         struct Task *task = &gTasks[taskId];
@@ -3264,9 +3244,7 @@ void sub_813ADD4(void)
         SetStandardWindowBorderStyle(task->tWindowId, 0);
 
         for (i = 0; i < MAX_SCROLL_MULTI_ON_SCREEN; i++)
-        {
             AddTextPrinterParameterized5(task->tWindowId, 1, sScrollableMultichoiceOptions[gSpecialVar_0x8004][scrollOffset + i], 10, i * 16, TEXT_SPEED_FF, NULL, 0, 0);
-        }
 
         AddTextPrinterParameterized(task->tWindowId, 1, gText_SelectorArrow, 0, selectedRow * 16, TEXT_SPEED_FF, NULL);
         PutWindowTilemap(task->tWindowId);
@@ -3313,9 +3291,10 @@ void GetBattleFrontierTutorMoveIndex(void)
 }
 
 // Never called
-void sub_813AF48(void)
+// Close a scrollable multichoice that stays open after selection
+void ScrollableMultichoice_ClosePersistentMenu(void)
 {
-    u8 taskId = FindTaskIdByFunc(sub_813A600);
+    u8 taskId = FindTaskIdByFunc(Task_ScrollableMultichoice_WaitReturnToList);
     if (taskId != TASK_NONE)
     {
         struct Task *task = &gTasks[taskId];
@@ -3931,13 +3910,18 @@ static void Task_LoopWingFlapSE(u8 taskId)
 #undef playCount
 #undef delay
 
+#define CURTAIN_HEIGHT 4
+#define CURTAIN_WIDTH 3
+#define tFrameTimer   data
+#define tCurrentFrame data[3]
+
 void CloseBattlePikeCurtain(void)
 {
     u8 taskId = CreateTask(Task_CloseBattlePikeCurtain, 8);
-    gTasks[taskId].data[0] = 4;
-    gTasks[taskId].data[1] = 4;
-    gTasks[taskId].data[2] = 4;
-    gTasks[taskId].data[3] = 0;
+    gTasks[taskId].tFrameTimer[0] = 4;
+    gTasks[taskId].tFrameTimer[1] = 4;
+    gTasks[taskId].tFrameTimer[2] = 4;
+    gTasks[taskId].tCurrentFrame = 0;
 }
 
 static void Task_CloseBattlePikeCurtain(u8 taskId)
@@ -3945,25 +3929,32 @@ static void Task_CloseBattlePikeCurtain(u8 taskId)
     u8 x, y;
     s16 *data = gTasks[taskId].data;
 
-    data[data[3]]--;
-    if (data[data[3]] == 0)
+    tFrameTimer[tCurrentFrame]--;
+    if (tFrameTimer[tCurrentFrame] == 0)
     {
-        for (y = 0; y < 4; y++)
+        for (y = 0; y < CURTAIN_HEIGHT; y++)
         {
-            for (x = 0; x < 3; x++)
+            for (x = 0; x < CURTAIN_WIDTH; x++)
             {
-                MapGridSetMetatileIdAt(gSaveBlock1Ptr->pos.x + x + 6, gSaveBlock1Ptr->pos.y + y + 4, x + 513 + y * 8 + data[3] * 32);
+                MapGridSetMetatileIdAt(gSaveBlock1Ptr->pos.x + x + MAP_OFFSET - 1,
+                                       gSaveBlock1Ptr->pos.y + y + MAP_OFFSET - 3,
+                                       (x + METATILE_BattlePike_CurtainFrames_Start) + (y * METATILE_ROW_WIDTH) + (tCurrentFrame * CURTAIN_HEIGHT * METATILE_ROW_WIDTH));
             }
         }
         DrawWholeMapView();
-        data[3]++;
-        if (data[3] == 3)
+        tCurrentFrame++;
+        if (tCurrentFrame == 3)
         {
             DestroyTask(taskId);
             EnableBothScriptContexts();
         }
     }
 }
+
+#undef CURTAIN_HEIGHT
+#undef CURTAIN_WIDTH
+#undef tFrameTimer
+#undef tCurrentFrame
 
 void GetBattlePyramidHint(void)
 {
