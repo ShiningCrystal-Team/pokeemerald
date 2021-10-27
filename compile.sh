@@ -5,7 +5,7 @@ sudo apt-get upgrade
 echo "Installing dependencies, please wait..."
 sudo apt install build-essential binutils-arm-none-eabi git libpng-dev
 echo "Cloning repositories, please wait..."
-git clone https://github.com/FieryMewtwo/pokeemerald
+git clone https://github.com/ShiningCrystal-Team/pokeemerald
 git clone https://github.com/pret/agbcc
 cd agbcc
 echo "Compiling pokeemerald.gba, please wait..."
