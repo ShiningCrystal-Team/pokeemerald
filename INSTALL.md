@@ -2,10 +2,17 @@
 
 These instructions explain how to set up the tools required to build **pokeemerald**, which assembles the source files into a ROM.
 
-These instructions come with notes which can be expanded by clicking the "<i>Note...</i>" text.
-In general, you should not need to open these unless if you get an error or if you need additional clarification.
+## Chrome OS:
+Chromebooks can be used to compile pokeemerald. Here are the two most recommended methods:
+- **Crostini**: If your Chromebook has Crostini (referred to in some occasions as Linux on ChromeOS), you can follow the Linux instructions.
+- **Gitpod**: If you have to use a Chromebook for school or something (not me! [***wink wink***]), and you don't have access to the Crostini method, you can use Gitpod. Note that this method requires a GitHub account. Create a blank repo, open it in Gitpod, and open a terminal. From there, you need to run these commands inside said terminal:
 
-If you run into trouble, ask for help on Discord or IRC (see [README.md](README.md)).
+```bash
+sudo su
+git clone https://github.com/FieryMewtwo/pokeemerald
+cd pokeemerald
+sh compile.sh
+```
 
 ## Windows
 Windows has instructions for building with three possible terminals, providing 3 different options in case the user stumbles upon unexpected errors.
@@ -22,7 +29,7 @@ Unscientific benchmarks suggest **msys2 is 2x slower** than WSL1, and **Cygwin i
 >   may <a href="https://bugreports.qt.io/browse/QTBUG-86277">have problems with parsing the <code>\\wsl$</code> network drive path</a>.
 </details>
 
-All of the Windows instructions assume that the default drive is C:\\. If this differs to your actual drive letter, then replace C with the correct drive letter when reading the instructions.
+All of the Windows instructions assume that the default drive is C:\. If this differs to your actual drive letter, then replace C with the correct drive letter when reading the instructions.
 
 **A note of caution**: As Windows 7 is officially unsupported by Microsoft and Windows 8 has very little usage, some maintainers are unwilling to maintain the Windows 7/8 instructions. Thus, these instructions may break in the future with fixes taking longer than fixes to the Windows 10 instructions.
 
@@ -109,7 +116,7 @@ cd /mnt/c/Users/<user>/Desktop/decomps
     
 If this works, then proceed to [Installation](#installation).
 
-Otherwise, ask for help on Discord or IRC (see [README.md](README.md)), or continue reading below for [Windows instructions using msys2](#windows-msys2).
+Otherwise, DM me on Discord (Fyreire#0272), or continue reading below for [Windows instructions using msys2](#windows-msys2).
 
 ## Windows (msys2)
 
@@ -182,14 +189,11 @@ cd Desktop/decomps
 
 If this works, then proceed to [Installation](#installation).
 
-Otherwise, ask for help on Discord or IRC (see [README.md](README.md)), or continue reading below for [Windows instructions using Cygwin](#windows-cygwin).
+Otherwise, DM me on Discord (Fyreire#0272), or continue reading below for [Windows instructions using Cygwin](#windows-cygwin).
 
 ## Windows (Cygwin)
-1. If devkitARM is **not installed**, then follow the instructions used to [install devkitARM](#installing-devkitarm) for the msys2 setup before continuing. *Remember to not continue following the msys2 instructions by mistake!*
-
-2.
+1.
     - If Cygwin is **not installed**, or does not have all of the required packages installed, then go to [Installing Cygwin](#installing-cygwin).
-    - If Cygwin is installed, but **is not configured to work with devkitARM**, then go to [Configuring devkitARM for Cygwin](#configuring-devkitarm-for-cygwin).
     - Otherwise, **open Cygwin** and go to [Choosing where to store pokeemerald (Cygwin)](#choosing-where-to-store-pokeemerald-cygwin)
 
 ### Installing Cygwin
@@ -212,26 +216,6 @@ Otherwise, ask for help on Discord or IRC (see [README.md](README.md)), or conti
 
 6. Once all required packages have been selected, finish the installation.
 
-### Configuring devkitARM for Cygwin
-
-Note that in Cygwin, Copy is Ctrl+Insert and Paste is Shift+Insert.
-
-1. Open **Cygwin**.
-
-2. Run the following commands to configure devkitPro to work with Cygwin.
-
-    ```bash
-    export DEVKITPRO=/cygdrive/c/devkitpro
-    echo export DEVKITPRO=$DEVKITPRO >> ~/.bashrc
-    export DEVKITARM=$DEVKITPRO/devkitARM
-    echo export DEVKITARM=$DEVKITARM >> ~/.bashrc
-    ```
-
-    <details>
-        <summary><i>Note...</i></summary>
-
-    >   Replace the drive letter c with the actual drive letter if it is not c.
-    </details>
 
 ### Choosing where to store pokeemerald (Cygwin)
 
@@ -250,7 +234,7 @@ Note that the directory **must exist** in Windows. If you want to store pokeemer
 >   Note 2: Windows path names are case-insensitive so adhering to capitalization isn't needed  
 </details>
     
-If this works, then proceed to [Installation](#installation). Otherwise, ask for help on Discord or IRC (see [README.md](README.md)).
+If this works, then proceed to [Installation](#installation). Otherwise, DM me on Discord: Fyreire#0272
 
 ## macOS
 1. If the Xcode Command Line Tools are not installed, download the tools [here](https://developer.apple.com/xcode/resources/), open your Terminal, and run the following command:
@@ -326,11 +310,7 @@ If this works, then proceed to [Installation](#installation). Otherwise, ask for
 Open Terminal and enter the following commands, depending on which distro you're using.
 
 ### Debian/Ubuntu-based distributions
-Run the following command to install the necessary packages:
-```bash
-sudo apt install build-essential binutils-arm-none-eabi git libpng-dev
-```
-Then proceed to [Choosing where to store pokeemerald (Linux)](#choosing-where-to-store-pokeemerald-linux).
+Start with [Choosing where to store pokeemerald (Linux)](#choosing-where-to-store-pokeemerald-linux).
 <details>
     <summary><i>Note for legacy repos...</i></summary>
 
@@ -338,6 +318,15 @@ Then proceed to [Choosing where to store pokeemerald (Linux)](#choosing-where-to
 >   then you will have to install devkitARM. Install all the above packages except binutils-arm-none-eabi, and follow the instructions to
 >   [install devkitARM on Debian/Ubuntu-based distributions](#installing-devkitarm-on-debianubuntu-based-distributions).
 </details>
+
+2. Run the following commands to compile:
+```bash
+sudo su
+git clone https://github.com/FieryMewtwo/pokeemerald
+cd <PATH TO `pokeemerald` ON YOUR MACHINE>
+chmod a+wrx compile.sh
+sh compile.sh
+```
 
 ### Other distributions
 _(Specific instructions for other distributions would be greatly appreciated!)_
@@ -362,7 +351,7 @@ _(Specific instructions for other distributions would be greatly appreciated!)_
 ### Choosing where to store pokeemerald (Linux)
 At this point, you can choose a folder to store pokeemerald (and agbcc) into. If so, you'll have to account for the modified folder path when changing directory to the pokeemerald folder.
 
-If this works, then proceed to [Installation](#installation). Otherwise, ask for help on Discord or IRC (see [README.md](README.md)).
+If this works, then proceed to [Installation](#installation). Otherwise, DM me on Discord: Fyreire#0272
 
 ## Installation
 
@@ -374,10 +363,9 @@ If this works, then proceed to [Installation](#installation). Otherwise, ask for
 >   scanning them which might improve performance while building.
 </details>
 
-1. If pokeemerald is not already downloaded (some users may prefer to download pokeemerald via a git client like GitHub Desktop), run:
-
+1. Clone the repo:
     ```bash
-    git clone https://github.com/pret/pokeemerald
+    git clone https://github.com/ShiningCrystal-Team/pokeemerald
     ```
 
     <details>
@@ -393,82 +381,18 @@ If this works, then proceed to [Installation](#installation). Otherwise, ask for
     >   Where *\<folder where pokeemerald is to be stored>* is the path of the folder [where you chose to store pokeemerald](#Choosing-where-to-store-pokeemerald-WSL1). Then run the `git clone` command again.
     </details>
 
-2. Install agbcc into pokeemerald. The commands to run depend on certain conditions. **You should only follow one of the listed instructions**:
-- If agbcc has **not been built before** in the folder where you chose to store pokeemerald, run the following commands to build and install it into pokeemerald:
-
+2. Allow execution of the install script (compile.sh)
     ```bash
-    git clone https://github.com/pret/agbcc
-    cd agbcc
-    ./build.sh
-    ./install.sh ../pokeemerald
+    sudo su
+    chmod a+wrx compile.sh
     ```
 
-- **Otherwise**, if agbcc has been built before (e.g. if the git clone above fails), but was **last built on a different terminal** than the one currently used (only relevant to Windows, e.g. switching from msys2 to WSL1), then run the following commands to build and install it into pokeemerald:
+3. Run the script as root:
 
     ```bash
-    cd agbcc
-    git clean -fX
-    ./build.sh
-    ./install.sh ../pokeemerald
+    sudo su
+    sh compile.sh
     ```
-
-- **Otherwise**, if agbcc has been built before on the same terminal, run the following commands to install agbcc into pokeemerald:
-
-    ```bash
-    cd agbcc
-    ./install.sh ../pokeemerald
-    ```
-
-    <details>
-        <summary><i>Note...</i></summary>
-
-        > If building agbcc or pokeemerald results in an error, try deleting the agbcc folder and re-installing agbcc as if it has not been built before.
-    </details>
-
-3. Once agbcc is installed, change directory back to the base directory where pokeemerald and agbcc are stored:
-
-    ```bash
-    cd ..
-    ```
-
-Now you're ready to [build **pokeemerald**](#build-pokeemerald)
-## Build pokeemerald
-If you aren't in the pokeemerald directory already, then **change directory** to the pokeemerald folder:
-```bash
-cd pokeemerald
-```
-To build **pokeemerald.gba** for the first time and confirm it matches the official ROM image (Note: to speed up builds, see [Parallel builds](#parallel-builds)):
-```bash
-make compare
-```
-If an OK is returned, then the installation went smoothly.
-<details>
-<summary>Note for Windows...</summary>
-> If you switched terminals since the last build (e.g. from msys2 to WSL1), you must run `make clean-tools` once before any subsequent `make` commands.
-</details>
-
-To build **pokeemerald.gba** with your changes:
-```bash
-make
-```
-
-# Building guidance
-
-## Parallel builds
-
-See [the GNU docs](https://www.gnu.org/software/make/manual/html_node/Parallel.html) and [this Stack Exchange thread](https://unix.stackexchange.com/questions/208568) for more information.
-
-To speed up building, first get the value of `nproc` by running the following command:
-```bash
-nproc
-```
-Builds can then be sped up by running the following command:
-```bash
-make -j<output of nproc>
-```
-Replace `<output of nproc>` with the number that the `nproc` command returned.
-
-`nproc` is not available on macOS. The alternative is `sysctl -n hw.ncpu` ([relevant Stack Overflow thread](https://stackoverflow.com/questions/1715580)).
 
 ## Debug info
 
